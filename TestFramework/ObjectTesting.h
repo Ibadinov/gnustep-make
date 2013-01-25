@@ -158,8 +158,8 @@ static void test_NSObject(NSString *className, NSArray *objects)
       id theObj = [objects objectAtIndex: i];
       id mySelf = nil;
       Class myClass = Nil;
-      int count1;
-      int count2;
+      NSInteger count1;
+      NSInteger count2;
       Class sup = Nil;
       const char *prefix;
       id r;

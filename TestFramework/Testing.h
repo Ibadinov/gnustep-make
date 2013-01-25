@@ -100,8 +100,8 @@ static NSException *testRaised __attribute__((unused)) = nil;
  * the expression used as its first argument might cause an exception
  * in any context where that might be a problem.
  */
-static void pass(int passed, const char *format, ...)  __attribute__((unused)) __attribute__ ((format(printf, 2, 3)));
-static void pass(int passed, const char *format, ...)
+static void pass(NSInteger passed, const char *format, ...)  __attribute__((unused)) __attribute__ ((format(printf, 2, 3)));
+static void pass(NSInteger passed, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
