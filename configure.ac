@@ -95,11 +95,9 @@ AC_ARG_WITH(library-combo,[
    and 'ccc' is the ApplicationKit to use (examples are 'gnu'
    for gnustep-gui and 'apple' for Apple Cocoa AppKit).  Use this 
    option if you want to force a different default library combo than 
-   the one that would be used by default.  For example, on Darwin GNUstep
-   will automatically use the Apple Objective-C frameworks by
-   default (library-combo=apple-apple-apple); if you are planning 
-   on installing and using gnustep-base on there, you would need 
-   to use --with-library-combo=gnu-gnu-gnu instead.  Please notice
+   the one that would be used by default. Default combos are: 
+   apple-gnu-gnu for Darwin platforms, nx-gnu-gnu for nextstep4
+   and openstep4, gnu-gnu-gnu for any other system. Please notice
    that if --disable-flattened is used, gnustep-make can have fat
    binaries that support multiple library combos.  In that case,
    this flag will only configure the default one, but you can still
@@ -111,9 +109,9 @@ ac_cv_library_combo=$ac_cv_library_combo
 
 if test "$ac_cv_library_combo" = "" -o "$ac_cv_library_combo" = "no"; then
   case "$host_os" in
-    darwin*)   ac_cv_library_combo=apple-apple-apple ;;
-    nextstep4) ac_cv_library_combo=nx-nx-nx          ;;
-    openstep4) ac_cv_library_combo=nx-nx-nx          ;;
+    darwin*)   ac_cv_library_combo=apple-gnu-gnu     ;;
+    nextstep4) ac_cv_library_combo=nx-gnu-gnu        ;;
+    openstep4) ac_cv_library_combo=nx-gnu-gnu        ;;
     *)         ac_cv_library_combo=gnu-gnu-gnu       ;;
   esac
 fi
@@ -326,7 +324,8 @@ AC_ARG_WITH(layout,[
    FilesystemLayouts subdirectory for a list of layouts and how 
    to choose which one you want (or create your own).
    If you do not specify a layout then 'fhs' is used except
-   when the library-combo is apple-apple-apple, in which case it is 'apple'.
+   when the library-combo is apple-apple-apple, in which case it is 'apple'
+   and apple-gnu-gnu, in which case it is 'gnustep'.
    Example: --with-layout=fhs
 ],
   GNUSTEP_FILESYSTEM_LAYOUT="$withval",)
@@ -345,8 +344,13 @@ else
     AC_MSG_RESULT(default layout: 'apple' since we're on apple-apple-apple)
     GNUSTEP_FILESYSTEM_LAYOUT_FILE=apple
   else
-    GNUSTEP_FILESYSTEM_LAYOUT_FILE=fhs
-    AC_MSG_RESULT(default layout: '$GNUSTEP_FILESYSTEM_LAYOUT_FILE')
+      if test "$ac_cv_library_combo" = "apple-gnu-gnu"; then
+        AC_MSG_RESULT(deafault layout: 'gnustep' since we're on apple-gnu-gnu)
+        GNUSTEP_FILESYSTEM_LAYOUT_FILE=gnustep
+      else
+        GNUSTEP_FILESYSTEM_LAYOUT_FILE=fhs
+        AC_MSG_RESULT(default layout: '$GNUSTEP_FILESYSTEM_LAYOUT_FILE')
+      fi
   fi
 fi
 
@@ -1380,7 +1384,7 @@ return __has_feature(objc_nonfragile_abi) ? 0 : 1;
   fi
 else
   if test x$USE_NONFRAGILE_ABI != xno; then
-  default_nonfragile=`echo -e '#ifndef __has_feature\n#define __has_feature(x) 0\n#endif\n__has_feature(objc_nonfragile_abi)'|$CC $CFLAGS -E -x objective-c - -o - |tail -1`
+  default_nonfragile=`echo "#ifndef __has_feature\n#define __has_feature(x) 0\n#endif\n__has_feature(objc_nonfragile_abi)"|$CC $CFLAGS -E -x objective-c - -o - |tail -1`
   
     if test x$default_nonfragile = x1; then
       USE_NONFRAGILE_ABI=yes;
