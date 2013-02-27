@@ -1384,7 +1384,9 @@ return __has_feature(objc_nonfragile_abi) ? 0 : 1;
   fi
 else
   if test x$USE_NONFRAGILE_ABI != xno; then
-  default_nonfragile=`echo "#ifndef __has_feature\n#define __has_feature(x) 0\n#endif\n__has_feature(objc_nonfragile_abi)"|$CC $CFLAGS -E -x objective-c - -o - |tail -1`
+  # /bin/echo may not support -e flag on some platforms, so it's better to use bash with it's built-in echo
+  # If there is any problem with bash on old platoforms, this code snippet should be moved into a dedicated file
+  default_nonfragile=`bash -c 'echo -e "#ifndef __has_feature\n#define __has_feature(x) 0\n#endif\n__has_feature(objc_nonfragile_abi)"|$CC $CFLAGS -E -x objective-c - -o - |tail -1'`
   
     if test x$default_nonfragile = x1; then
       USE_NONFRAGILE_ABI=yes;
