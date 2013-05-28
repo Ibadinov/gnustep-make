@@ -1,3 +1,57 @@
+2012-04-08  Richard Frith-Macdonald <rfm@gnu.org>
+
+        * TestFramework/ObjectTesting.h: Fix error performing equality test
+        in copying protocol test macro.
+
+2012-03-28  Richard Frith-Macdonald <rfm@gnu.org>
+
+        Make release
+	* Version 2.6.4
+        Update release notes/documentation
+
+2012-03-25  Richard Frith-Macdonald <rfm@gnu.org>
+
+        * TestFramework/Testing.h: Use -isEqualForTestcase: for PASS_EQUAL
+        macro equality testing if the expected value responds to it.
+        Add informal protocol declaring -isEqualForTestcase:
+        * TestFramework/ObjectTesting.h: Convert protocol checking functions
+        to macros (so error messages get file/line number information) and
+        get copy and coding before/after equality checks to use the
+        PASS_EQUAL macro so that we can easily make customised tests by
+        implementing -isEqualForTestcase: for the class being tested.
+
+2012-03-16  Emmanuel Maillard <mailing-lists@e-maillard.com>
+
+        * target.make: Add target for android
+
+2012-03-08  Jean-Charles BERTIN <jc.bertin@axinoe.com>
+
+        * TestFramework/gnustep-tests.in: Fix typo
+
+2012-03-01  Richard Frith-Macdonald <rfm@gnu.org>
+
+        * common.make: Remove -shared-libgcc linker flag
+        * configure.ac: Add check for clang and add -shared-libgcc to linker
+        flags if we aren't using it (using gcc) but are using exceptions.
+        Tidy a little.
+        Patch based on contribtion by Jean-Charles Bertin.
+
+2012-03-01  Richard Frith-Macdonald <rfm@gnu.org>
+
+        * Version ... bump subminor number in preparation for next release.
+
+2012-03-01  Richard Frith-Macdonald <rfm@gnu.org>
+
+        Make release
+	* Version 2.6.3
+        * Update release notes
+
+2013-02-20  Nicola Pero  <nicola.pero@meta-innovation.com>
+
+	* Instance/framework.make: Removed trailing '/' after
+	$(GNUSTEP_TARGET_LDIR) in a couple of cases, to fix building on
+	non-flattened layout.
+
 2012-01-31  Richard Frith-Macdonald <rfm@gnu.org>
 
 	* rules.make: A couple more printout targets for managing installation

@@ -607,6 +607,7 @@ SOLARIS_SHARED
 GCC_WITH_PRECOMPILED_HEADERS
 AUTO_DEPENDENCIES
 USE_OBJC_EXCEPTIONS
+CLANG_CC
 OBJ_MERGE_CMD_FLAG
 USE_NONFRAGILE_ABI
 OBJCXX
@@ -5687,7 +5688,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 $as_echo "$USE_NONFRAGILE_ABI" >&6; }
   CFLAGS="$CFLAGS_no_nonfragile"
 
-  if test x$USE_NONFRAGILE_ABI = xno; then
+  if test x"$USE_NONFRAGILE_ABI" = x"no"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: The nonfragile ABI was requested, but the compiler" >&5
 $as_echo "$as_me: The nonfragile ABI was requested, but the compiler" >&6;}
     { $as_echo "$as_me:${as_lineno-$LINENO}: doesn't support it." >&5
@@ -5695,7 +5696,7 @@ $as_echo "$as_me: doesn't support it." >&6;}
     as_fn_error $? "compiler doesn't support nonfragile ABI" "$LINENO" 5
   fi
 else
-  if test x$USE_NONFRAGILE_ABI != xno; then
+  if test x"$USE_NONFRAGILE_ABI" != x"no"; then
   # /bin/echo may not support -e flag on some platforms, so it's better to use bash with it's built-in echo
   # If there is any problem with bash on old platoforms, this code snippet should be moved into a dedicated file
   default_nonfragile=`bash -c 'echo -e "#ifndef __has_feature\n#define __has_feature(x) 0\n#endif\n__has_feature(objc_nonfragile_abi)"|$CC $CFLAGS -E -x objective-c - -o - |tail -1'`
@@ -5706,7 +5707,7 @@ else
       USE_NONFRAGILE_ABI=no;
     fi
   fi
-  if test x$USE_NONFRAGILE_ABI = xyes; then
+  if test x"$USE_NONFRAGILE_ABI" = x"yes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes (compiler default)" >&5
 $as_echo "yes (compiler default)" >&6; }
   else
@@ -5756,7 +5757,7 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the GCC version" >&5
 $as_echo_n "checking for the GCC version... " >&6; }
-if test ! ${GCC} = "yes" ; then
+if test ! x"${GCC}" = x"yes" ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no: it's not gcc" >&5
 $as_echo "no: it's not gcc" >&6; }
 else
@@ -5784,6 +5785,25 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: version: ${gs_cv_gcc_parsed_version}" >&5
 $as_echo "version: ${gs_cv_gcc_parsed_version}" >&6; }
 fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler is clang" >&5
+$as_echo_n "checking whether the compiler is clang... " >&6; }
+if test ! x"${GCC}" = x"yes" ; then
+  CLANG_CC=no
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+  if "${CC}" -v 2>&1 | grep -q 'clang version'; then
+    CLANG_CC=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  else
+    CLANG_CC=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  fi
+fi
+
 
 # Do not restore LIBS and CFLAGS yet as we need to test if the
 # compiler supports native exceptions.
@@ -5836,7 +5856,7 @@ else
   USE_OBJC_EXCEPTIONS=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    if test x$USE_OBJC_EXCEPTIONS = xno; then
+    if test x"$USE_OBJC_EXCEPTIONS" = x"no"; then
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
@@ -5850,6 +5870,12 @@ $as_echo "$USE_OBJC_EXCEPTIONS" >&6; }
 fi
 
 
+# Check if we need -shared-libgcc linker flags
+if test x"$USE_OBJC_EXCEPTIONS" = x"yes" -a x"${GCC}" = x"yes"; then
+  if test x"$CLANG_CC" = x"no"; then
+    LDFLAGS="$LDFLAGS -shared-libgcc"
+  fi
+fi
 
 #--------------------------------------------------------------------
 # Check if compiler supports -MMD -MP to generate %.d files ...
