@@ -9,12 +9,22 @@
 The currently released version is @samp{@value{GNUSTEP-MAKE-VERSION}}.
 @end ifclear
 
+@section Changes in version @samp{2.6.4}
+
+Test framework extended equality tests.
+
+Android build target
+
+@ifclear ANNOUNCE-ONLY
+
+@section Changes in version @samp{2.6.3}
+
+Minor bugfix release.
+
 @section Changes in version @samp{2.6.2}
 
 Added standalone filesystem layout for putting everything in 
 one directory for easy deployment of relocatable. Other bug fixes.
-
-@ifclear ANNOUNCE-ONLY
 
 @section Changes in version @samp{2.6.1}
 
